@@ -61,9 +61,5 @@ namespace GeekShopping.ProductAPI.Repository
 				return false;
 			}
 		}
-
-
-
-
 	}
 }
