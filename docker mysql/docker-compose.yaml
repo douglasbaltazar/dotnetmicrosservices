@@ -1,0 +1,19 @@
+version: "3.5"
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: dotnetcurso
+    restart: "always"
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: 'dotnet_mysql'
+      MYSQL_USER: 'dotnet'
+      MYSQL_PASSWORD: 'dotnet'
+      MYSQL_ROOT_PASSWORD: 'root'
+    expose:
+      - '3306'
+    build: 
+      dockerfile: mysql.Dockerfile
+      
