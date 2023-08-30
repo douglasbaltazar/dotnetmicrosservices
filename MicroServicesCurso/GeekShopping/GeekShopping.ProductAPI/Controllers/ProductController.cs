@@ -24,14 +24,14 @@ namespace GeekShopping.ProductAPI.Controllers
 			}
 			return Ok(product);
 		}
-		[HttpGet("/")]
+		[HttpGet]
 		public async Task<ActionResult<IEnumerable<ProductDTO>>> FindAll()
 		{
 			var products = await _repository.FindAll();
 			return Ok(products);
 		}
 		[HttpPost]
-		public async Task<ActionResult<ProductDTO>> Create(ProductDTO dto)
+		public async Task<ActionResult<ProductDTO>> Create([FromBody] ProductDTO dto)
 		{
 			if (dto == null)
 			{
@@ -42,7 +42,7 @@ namespace GeekShopping.ProductAPI.Controllers
 		}
 
 		[HttpPut]
-		public async Task<ActionResult<ProductDTO>> Update(ProductDTO dto)
+		public async Task<ActionResult<ProductDTO>> Update([FromBody] ProductDTO dto)
 		{
 			if (dto == null)
 			{
