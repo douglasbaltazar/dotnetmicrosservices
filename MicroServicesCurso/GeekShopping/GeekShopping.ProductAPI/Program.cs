@@ -52,7 +52,7 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddAuthentication("Bearer")
 	.AddJwtBearer(options =>
 	{
-		options.Authority = "http://localhost:5092/";
+		options.Authority = "https://localhost:4435/";
 		options.TokenValidationParameters = new TokenValidationParameters
 		{
 			ValidateAudience = false
