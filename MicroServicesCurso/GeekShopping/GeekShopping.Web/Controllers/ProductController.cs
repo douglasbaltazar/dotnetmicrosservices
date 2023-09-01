@@ -15,11 +15,9 @@ namespace GeekShopping.Web.Controllers
 		{
 			_productService = productService ?? throw new ArgumentNullException(nameof(productService));
 		}
-        [Authorize]
-		public async Task<ActionResult> ProductIndex()
+		public async Task<ActionResult> Index()
 		{
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            var products = await _productService.FindAllProducts(accessToken);
+            var products = await _productService.FindAllProducts("");
 			return View(products);
 		}
 
@@ -38,7 +36,7 @@ namespace GeekShopping.Web.Controllers
                 var response = await _productService.CreateProduct(model, accessToken);
 				if(response != null)
 				{
-					return RedirectToAction(nameof(ProductIndex));
+					return RedirectToAction(nameof(Index));
 				}
 			}
 
@@ -67,7 +65,7 @@ namespace GeekShopping.Web.Controllers
                 var response = await _productService.UpdateProduct(model, accessToken);
                 if (response != null)
                 {
-                    return RedirectToAction(nameof(ProductIndex));
+                    return RedirectToAction(nameof(Index));
                 }
             }
 
@@ -94,7 +92,7 @@ namespace GeekShopping.Web.Controllers
             var response = await _productService.DeleteProductById(model.Id, accessToken);
                 if (response)
                 {
-                    return RedirectToAction(nameof(ProductIndex));
+                    return RedirectToAction(nameof(Index));
                 }
 
             return View(model);

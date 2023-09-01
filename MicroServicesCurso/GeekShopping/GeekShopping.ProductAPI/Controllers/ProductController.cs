@@ -28,7 +28,6 @@ namespace GeekShopping.ProductAPI.Controllers
 			return Ok(product);
 		}
 		[HttpGet]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> FindAll()
 		{
 			var products = await _repository.FindAll();
