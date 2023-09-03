@@ -27,7 +27,7 @@ namespace GeekShopping.Web.Controllers
         }
 		[HttpPost]
         [Authorize]
-        public async Task<ActionResult> ProductCreate(ProductModel model)
+        public async Task<ActionResult> ProductCreate(ProductViewModel model)
         {
             if(ModelState.IsValid)
 			{
@@ -56,7 +56,7 @@ namespace GeekShopping.Web.Controllers
         }
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> ProductUpdate(ProductModel model)
+        public async Task<ActionResult> ProductUpdate(ProductViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace GeekShopping.Web.Controllers
         }
         [HttpPost]
         [Authorize(Roles = Role.Admin)]
-        public async Task<ActionResult> ProductDelete(ProductModel model)
+        public async Task<ActionResult> ProductDelete(ProductViewModel model)
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
 
