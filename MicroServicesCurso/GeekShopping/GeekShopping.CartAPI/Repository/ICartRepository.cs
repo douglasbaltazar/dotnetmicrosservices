@@ -11,6 +11,6 @@ namespace GeekShopping.CartAPI.Repository
         Task<bool> ApplyCoupon(string userId, string couponCode);
         Task<bool> RemoveCoupom(string userId);
 
-        Task<bool> ClearCard(string userId);
+        Task<bool> ClearCart(string userId);
     }
 }

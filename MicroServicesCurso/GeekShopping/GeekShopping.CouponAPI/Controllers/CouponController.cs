@@ -19,7 +19,7 @@ namespace GeekShopping.CouponAPI.Controllers
         public async Task<ActionResult<CouponDTO>> FindByName(string couponCode)
         {
             var coupon = await _repository.GetCouponByCouponCode(couponCode);
-            if (coupon.Id <= 0)
+            if (coupon == null)
             {
                 return NotFound();
             }

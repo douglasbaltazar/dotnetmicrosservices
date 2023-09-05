@@ -11,7 +11,7 @@ namespace GeekShopping.Web.Services.IServices
 
         Task<bool> RemoveFromCart(long cartId, string token);
 
-        Task<bool> ApplyCoupon(CartViewModel cart, string couponCode, string token);
+        Task<bool> ApplyCoupon(CartViewModel cart, string token);
         Task<bool> RemoveCoupon(string userId, string token);
 
         Task<bool> ClearCart(string userId, string token);

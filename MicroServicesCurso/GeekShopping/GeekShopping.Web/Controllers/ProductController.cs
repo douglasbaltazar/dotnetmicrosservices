@@ -15,7 +15,7 @@ namespace GeekShopping.Web.Controllers
 		{
 			_productService = productService ?? throw new ArgumentNullException(nameof(productService));
 		}
-		public async Task<ActionResult> Index()
+		public async Task<ActionResult> ProductIndex()
 		{
             var products = await _productService.FindAllProducts("");
 			return View(products);
