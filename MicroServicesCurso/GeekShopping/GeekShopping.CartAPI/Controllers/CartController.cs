@@ -1,4 +1,5 @@
 ﻿using GeekShopping.CartAPI.Data.DTO;
+using GeekShopping.CartAPI.Messages;
 using GeekShopping.CartAPI.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -77,6 +78,20 @@ namespace GeekShopping.CartAPI.Controllers
                 return NotFound();
             }
             return Ok(status);
+        }
+        [HttpPost("checkout")]
+        public async Task<ActionResult<CheckoutHeaderDTO>> Checkout(CheckoutHeaderDTO dto)
+        {
+            var cart = await _repository.FindCartByUserId(dto.UserId);
+            if (cart == null)
+            {
+                return NotFound();
+            }
+            dto.CartDetails = cart.CartDetail;
+            dto.Time = DateTime.Now;
+
+            // Task RabbitMQ logic comes here
+            return Ok(dto);
         }
 
     }
