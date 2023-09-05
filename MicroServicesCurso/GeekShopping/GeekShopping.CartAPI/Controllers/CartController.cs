@@ -2,6 +2,7 @@
 using GeekShopping.CartAPI.Messages;
 using GeekShopping.CartAPI.RabbitMQSender;
 using GeekShopping.CartAPI.Repository;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -89,8 +90,8 @@ namespace GeekShopping.CartAPI.Controllers
         [HttpPost("checkout")]
         public async Task<ActionResult<CheckoutHeaderDTO>> Checkout(CheckoutHeaderDTO dto)
         {
-            // var token = await HttpContext.GetTokenAsync("access_token");
-            string token = Request.Headers.Authorization;
+            var token = await HttpContext.GetTokenAsync("access_token");
+            // string token = Request.Headers.Authorization;
             if(dto?.UserId== null)
             {
                 return BadRequest();
@@ -113,6 +114,7 @@ namespace GeekShopping.CartAPI.Controllers
 
             // Task RabbitMQ logic comes here
             _rabbitMQSender.SendMessage(dto, "checkoutqueue");
+            await _repository.ClearCart(dto.UserId);
             return Ok(dto);
         }
 

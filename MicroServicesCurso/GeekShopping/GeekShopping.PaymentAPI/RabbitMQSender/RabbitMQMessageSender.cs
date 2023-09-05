@@ -1,11 +1,11 @@
-﻿using GeekShopping.CartAPI.Messages;
-using GeekShopping.MessageBus;
-using Microsoft.AspNetCore.Components.Web;
+﻿using GeekShopping.MessageBus;
+using GeekShopping.PaymentAPI.Messages;
 using RabbitMQ.Client;
+using System;
 using System.Text;
 using System.Text.Json;
 
-namespace GeekShopping.CartAPI.RabbitMQSender
+namespace GeekShopping.PaymentAPI.RabbitMQSender
 {
     public class RabbitMQMessageSender : IRabbitMQMessageSender
     {
@@ -23,12 +23,13 @@ namespace GeekShopping.CartAPI.RabbitMQSender
 
         public void SendMessage(BaseMessage message, string queueName)
         {
-            if(ConnectionExists())
+            if (ConnectionExists())
             {
                 using var channel = _connection.CreateModel();
                 channel.QueueDeclare(queue: queueName, false, false, false, arguments: null);
                 byte[] body = GetMessageAsByteArray(message);
-                channel.BasicPublish(exchange: "", routingKey: queueName, basicProperties: null, body: body);
+                channel.BasicPublish(
+                    exchange: "", routingKey: queueName, basicProperties: null, body: body);
             }
         }
 
@@ -38,11 +39,11 @@ namespace GeekShopping.CartAPI.RabbitMQSender
             {
                 WriteIndented = true,
             };
-            var json = JsonSerializer.Serialize<CheckoutHeaderDTO>((CheckoutHeaderDTO) message, options);
+            var json = JsonSerializer.Serialize<UpdatePaymentResultMessage>((UpdatePaymentResultMessage)message, options);
             var body = Encoding.UTF8.GetBytes(json);
             return body;
-
         }
+
         private void CreateConnection()
         {
             try
@@ -51,11 +52,13 @@ namespace GeekShopping.CartAPI.RabbitMQSender
                 {
                     HostName = _hostName,
                     UserName = _userName,
-                    Password = _password,
+                    Password = _password
                 };
                 _connection = factory.CreateConnection();
-            } catch(Exception)
+            }
+            catch (Exception)
             {
+                //Log exception
                 throw;
             }
         }
@@ -66,7 +69,5 @@ namespace GeekShopping.CartAPI.RabbitMQSender
             CreateConnection();
             return _connection != null;
         }
-
-        
     }
 }

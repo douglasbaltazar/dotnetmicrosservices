@@ -19,7 +19,14 @@ namespace GeekShopping.CartAPI.Repository
         public async Task<CouponDTO> GetCouponByCouponCode(string couponCode, string token)
         {
             //         public const string BasePath = "api/v1/coupon";
-
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            var response = await _httpClient.GetAsync($"/api/v1/coupon/{couponCode}");
+            var content = await response.Content.ReadAsStringAsync();
+            if (response.StatusCode != HttpStatusCode.OK) return new CouponDTO();
+            return JsonSerializer.Deserialize<CouponDTO>(content,
+                new JsonSerializerOptions
+                { PropertyNameCaseInsensitive = true });
+            /*
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.GetAsync($"/api/v1/coupon/{couponCode}");
             var content = await response.Content.ReadAsStringAsync();
@@ -31,6 +38,7 @@ namespace GeekShopping.CartAPI.Repository
             {
                 PropertyNameCaseInsensitive = true
             });
+            */
         }
     }
 }
