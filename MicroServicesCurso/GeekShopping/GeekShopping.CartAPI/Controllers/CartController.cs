@@ -12,12 +12,16 @@ namespace GeekShopping.CartAPI.Controllers
     public class CartController : ControllerBase
     {
         private readonly ICartRepository _repository;
+        private readonly ICouponRepository _couponRepository;
         private readonly IRabbitMQMessageSender _rabbitMQSender;
-        public CartController(ICartRepository repository, IRabbitMQMessageSender rabbitMQSender)
+
+        public CartController(ICartRepository repository, ICouponRepository couponRepository, IRabbitMQMessageSender rabbitMQSender)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _couponRepository = couponRepository ?? throw new ArgumentNullException(nameof(couponRepository));
             _rabbitMQSender = rabbitMQSender ?? throw new ArgumentNullException(nameof(rabbitMQSender));
         }
+
         [HttpGet("find-cart/{id}")]
         public async Task<ActionResult<CartDTO>> FindById(string id)
         {
@@ -85,6 +89,8 @@ namespace GeekShopping.CartAPI.Controllers
         [HttpPost("checkout")]
         public async Task<ActionResult<CheckoutHeaderDTO>> Checkout(CheckoutHeaderDTO dto)
         {
+            // var token = await HttpContext.GetTokenAsync("access_token");
+            string token = Request.Headers.Authorization;
             if(dto?.UserId== null)
             {
                 return BadRequest();
@@ -93,6 +99,14 @@ namespace GeekShopping.CartAPI.Controllers
             if (cart == null)
             {
                 return NotFound();
+            }
+            if(!string.IsNullOrEmpty(dto.CouponCode))
+            {
+                CouponDTO coupon = await _couponRepository.GetCouponByCouponCode(dto.CouponCode, token);
+                if(dto.DiscountTotal != coupon.DiscountAmount)
+                {
+                    return StatusCode(412);
+                }
             }
             dto.CartDetails = cart.CartDetail;
             dto.Time = DateTime.Now;
